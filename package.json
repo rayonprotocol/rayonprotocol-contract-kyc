@@ -1,0 +1,28 @@
+{
+  "name": "rayonprotocol-contract-kyc",
+  "version": "1.0.0",
+  "description": "This is a kyc contract project of RayonProtocol",
+  "main": "truffle.js",
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rayonprotocol/rayonprotocol-contract-kyc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rayonprotocol/rayonprotocol-contract-kyc/issues"
+  },
+  "homepage": "https://github.com/rayonprotocol/rayonprotocol-contract-kyc#readme",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "openzeppelin-solidity": "^1.12.0"
+  }
+}
