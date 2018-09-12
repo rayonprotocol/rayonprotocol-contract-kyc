@@ -6,7 +6,9 @@ This is a kyc contract project of RayonProtocol
 ### Architecture
  - The Rayon KYC System server signs provided identity data
  - KYC Management smart contract verifies and registers KYC attestation data on the blockchain.
+ - System Architecture
 ![rayon_kyc_arch](doc/rayon_kyc_arch.png)
+ - Contracts
 ![rayon_kyc_contract](doc/rayon_kyc_contract.png)
 
 
