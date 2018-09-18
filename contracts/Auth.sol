@@ -21,11 +21,21 @@ contract Auth is RayonBase {
     // Event defination
     event LogAuthAdded(address indexed userId);
 
+    function toBytes(address a) public view returns (bytes b){
+        assembly {
+                let m := mload(0x40)
+                mstore(add(m, 20), xor(0x140000000000000000000000000000000000000000, a))
+                mstore(0x40, add(m, 52))
+                b := m
+        }
+    }
+
+
     // Functions
-    function _verify(bytes32 _dateHash, address _signedAddress, uint8 _v, bytes32 _r, bytes32 _s) private pure returns (bool) {
-        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
-        bytes32 prefixedHash = keccak256(abi.encodePacked(prefix, _dateHash));
-        address verifiedAddress = ecrecover(prefixedHash, _v, _r, _s);
+    function _verify(address _prefixAddress, bytes32 _dataHash, address _signedAddress, uint8 _v, bytes32 _r, bytes32 _s) view private returns (bool) {
+        bytes memory addressPrefixedData = abi.encodePacked(toBytes(_prefixAddress), _dataHash);
+        bytes32 addressPrefixedDataHash = keccak256(addressPrefixedData);
+        address verifiedAddress = ecrecover(addressPrefixedDataHash, _v, _r, _s);
 
         return verifiedAddress == _signedAddress;
     }
@@ -36,15 +46,16 @@ contract Auth is RayonBase {
         require(!_contains(entry), "the user should not be registered");
         
         KycAttester kycAttesterContract = KycAttester(kycAttesterContractAddress);
-        require(kycAttesterContract.contains(_attesterId), "the kyc attester should not be registered");
+        require(kycAttesterContract.contains(_attesterId), "the kyc attester should be registered");
 
-        require(_verify(_authHash, _attesterId, _v, _r, _s), "signature must be verified");
+        require(_verify(userId, _authHash, _attesterId, _v, _r, _s), "signature must be verified");
 
         entry.userId = userId;
         entry.authHash = _authHash;
         entry.attesterId = _attesterId;
         entry.registerTime = now;
         entry.index = userAuthList.push(userId) - 1;
+        emit LogAuthAdded(userId);
     }
 
     function getUserAuth(address _userId) public view returns (address, bytes32, address, uint256) {
