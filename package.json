@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "TRUFFLE_TEST=true ./ganache-cli.sh"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,16 @@
   "dependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "ganache-cli": "^6.1.8",
+    "moment-timezone": "^0.5.21",
     "openzeppelin-solidity": "^1.12.0"
+  },
+  "devDependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "chai-bignumber": "^2.0.2",
+    "dotenv": "^6.0.0",
+    "truffle": "^4.1.14",
+    "truffle-hdwallet-provider": "^0.0.6"
   }
 }

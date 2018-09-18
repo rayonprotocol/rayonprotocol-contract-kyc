@@ -8,3 +8,6 @@ tests/**/*.jsx
 package-lock.json
 yarn.lock
 build/
+.env
+coverage
+coverage.json
