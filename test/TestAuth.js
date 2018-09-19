@@ -77,14 +77,13 @@ contract('TestAuth', function (accounts) {
       userId.length.should.be.zero;
     });
 
-    it('reverts on getting not exsiting auth for use', async function () {
+    it('reverts on getting not exsiting auth for user', async function () {
       await auth.getUserAuth(user).should.be.rejectedWith('user must be present in map');
       await auth.getUserAuthByIndex(0).should.be.rejectedWith('index must be in range');
     });
 
     it('adds a user auth', async function () {
-      await auth.add(...userAuthArgs)
-        .should.be.fulfilled;
+      await auth.add(...userAuthArgs).should.be.fulfilled;
       const [userId, userAuthHash, userAttesterId] = await auth.getUserAuth(user);
 
       userId.should.be.equal(user);
