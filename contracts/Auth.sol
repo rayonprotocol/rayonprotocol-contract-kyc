@@ -21,25 +21,6 @@ contract Auth is RayonBase {
     // Event defination
     event LogAuthAdded(address indexed userId);
 
-    function toBytes(address a) public view returns (bytes b){
-        assembly {
-                let m := mload(0x40)
-                mstore(add(m, 20), xor(0x140000000000000000000000000000000000000000, a))
-                mstore(0x40, add(m, 52))
-                b := m
-        }
-    }
-
-
-    // Functions
-    function _verify(address _prefixAddress, bytes32 _dataHash, address _signedAddress, uint8 _v, bytes32 _r, bytes32 _s) view private returns (bool) {
-        bytes memory addressPrefixedData = abi.encodePacked(toBytes(_prefixAddress), _dataHash);
-        bytes32 addressPrefixedDataHash = keccak256(addressPrefixedData);
-        address verifiedAddress = ecrecover(addressPrefixedDataHash, _v, _r, _s);
-
-        return verifiedAddress == _signedAddress;
-    }
-
     function add(bytes32 _authHash, address _attesterId, uint8 _v, bytes32 _r, bytes32 _s) public {
         address userId = msg.sender;
         AuthEntry storage entry = userAuthMap[userId];
@@ -48,7 +29,9 @@ contract Auth is RayonBase {
         KycAttester kycAttesterContract = KycAttester(kycAttesterContractAddress);
         require(kycAttesterContract.contains(_attesterId), "the kyc attester should be registered");
 
-        require(_verify(userId, _authHash, _attesterId, _v, _r, _s), "signature must be verified");
+        bytes memory addressPrefixedData = abi.encodePacked(_addressToBytes(userId), _authHash);
+        bytes32 addressPrefixedDataHash = keccak256(addressPrefixedData);
+        require(_verifySignature(addressPrefixedDataHash, _attesterId, _v, _r, _s), "signature must be verified");
 
         entry.userId = userId;
         entry.authHash = _authHash;
